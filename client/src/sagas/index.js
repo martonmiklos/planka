@@ -16,5 +16,5 @@ export default function* rootSaga() {
     yield call(loginSaga);
   }
 
-  yield call(coreSaga);
+  yield call(coreSaga, !accessToken);
 }

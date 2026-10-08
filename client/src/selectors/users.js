@@ -259,6 +259,31 @@ export const selectBoardIdsForCurrentUser = createSelector(
   },
 );
 
+export const selectVisibleBoardIdsForCurrentUser = createSelector(
+  orm,
+  (state) => selectCurrentUserId(state),
+  (state) => selectIsHiddenProjectsVisible(state),
+  ({ User }, id, isHiddenProjectsVisible) => {
+    if (!id) {
+      return [];
+    }
+
+    const userModel = User.withId(id);
+
+    if (!userModel) {
+      return [];
+    }
+
+    return userModel
+      .getFilteredProjectsModelArray('', isHiddenProjectsVisible)
+      .flatMap((projectModel) =>
+        projectModel
+          .getBoardsModelArrayAvailableForUser(userModel)
+          .map((boardModel) => boardModel.id),
+      );
+  },
+);
+
 export const selectNotificationIdsForCurrentUser = createSelector(
   orm,
   (state) => selectCurrentUserId(state),
@@ -336,6 +361,7 @@ export default {
   selectFavoriteProjectIdsForCurrentUser,
   selectProjectsToListsWithEditorRightsForCurrentUser,
   selectBoardIdsForCurrentUser,
+  selectVisibleBoardIdsForCurrentUser,
   selectNotificationIdsForCurrentUser,
   selectNotificationServiceIdsForCurrentUser,
   selectIsFavoritesActiveForCurrentUser,

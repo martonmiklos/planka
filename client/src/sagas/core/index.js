@@ -3,7 +3,7 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import { apply, fork, select, take } from 'redux-saga/effects';
+import { apply, call, fork, select, take } from 'redux-saga/effects';
 
 import watchers from './watchers';
 import services from './services';
@@ -13,8 +13,12 @@ import { socket } from '../../api';
 import ActionTypes from '../../constants/ActionTypes';
 import Paths from '../../constants/Paths';
 
-export default function* coreSaga() {
+export default function* coreSaga(redirectFromLogin = false) {
   yield runWatchers(watchers);
+
+  if (redirectFromLogin) {
+    yield call(services.goToRoot);
+  }
 
   yield apply(socket, socket.connect);
   yield fork(services.initializeCore);

@@ -3,7 +3,7 @@
  * Licensed under the Fair Use License: https://github.com/plankanban/planka/blob/master/LICENSE.md
  */
 
-import { call, cancel, fork, take } from 'redux-saga/effects';
+import { cancel, fork, take } from 'redux-saga/effects';
 
 import watchers from './watchers';
 import services from './services';
@@ -22,5 +22,4 @@ export default function* loginSaga() {
   ]);
 
   yield cancel(watcherTasks);
-  yield call(services.goToRoot);
 }
